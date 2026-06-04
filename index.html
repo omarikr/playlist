@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Player</title>
+    <title>mix</title>
+    <link rel="icon" href="background.webp">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%233b82f6"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 12 12, auto;
+            cursor: auto;
         }
         
         body {
             font-family: 'Outfit', sans-serif;
-            background: url('https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg') center center fixed;
+            background: url('background.webp') center center fixed;
             background-size: cover;
             min-height: 100vh;
             overflow-x: hidden;
@@ -40,8 +41,9 @@
         }
         
         .album-art {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
-            box-shadow: 0 8px 32px rgba(6, 182, 212, 0.4);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 100%);
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
         }
         
         .progress-bar {
@@ -49,7 +51,7 @@
         }
         
         .progress-fill {
-            background: linear-gradient(90deg, #06b6d4, #22d3ee);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
         }
         
         .volume-slider {
@@ -66,7 +68,7 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #06b6d4;
+            background: rgba(255, 255, 255, 0.8);
             cursor: pointer;
         }
         
@@ -75,7 +77,7 @@
         }
         
         .control-btn:hover {
-            color: #e0f2fe;
+            color: white;
             transform: scale(1.1);
         }
         
@@ -84,8 +86,9 @@
         }
         
         .play-btn {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
             transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
         }
         
         .play-btn:hover {
@@ -119,7 +122,7 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #06b6d4;
+            background: rgba(255, 255, 255, 0.8);
             cursor: pointer;
         }
         
@@ -129,17 +132,17 @@
         }
         
         .playlist-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(6, 182, 212, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
         }
         
         .playlist-item.active {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(6, 182, 212, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
         }
         
         .playlist-item.active .song-title {
-            color: #06b6d4;
+            color: white;
         }
         
         .playlist-item.dragging {
@@ -148,8 +151,8 @@
         }
         
         .playlist-item.drag-over {
-            border-color: #06b6d4;
-            background: rgba(6, 182, 212, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.15);
         }
         
         .toggle-btn {
@@ -165,12 +168,13 @@
         }
         
         .speed-btn:hover {
-            background: rgba(6, 182, 212, 0.3);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .speed-btn.active {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            background: rgba(255, 255, 255, 0.3);
             color: white;
+            backdrop-filter: blur(10px);
         }
         
         .scrollbar-thin::-webkit-scrollbar {
@@ -195,12 +199,13 @@
         }
         
         .spatial-btn:hover {
-            background: rgba(6, 182, 212, 0.3);
+            background: rgba(255, 255, 255, 0.2);
         }
         
         .spatial-btn.active {
-            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            background: rgba(255, 255, 255, 0.3);
             color: white;
+            backdrop-filter: blur(10px);
         }
         
         .reset-btn {
@@ -214,11 +219,6 @@
 </head>
 <body class="flex items-center justify-center p-6">
     <div class="w-full max-w-5xl">
-        <!-- Welcome Message -->
-        <div class="text-center mb-6 md:mb-10 px-4">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white mb-3 md:mb-4 tracking-wide drop-shadow-lg">Greetings, thanks for visiting.</h1>
-            <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-white font-light drop-shadow-md px-2">I made this for random reasons, but hope you enjoy listening to my playlist.</p>
-        </div>
         
         <!-- Main Player -->
         <div class="glass-card rounded-3xl p-6 md:p-8 mb-6 max-w-2xl mx-auto">
@@ -237,7 +237,7 @@
                     <!-- Song Info -->
                     <div class="mb-4 md:mb-6 text-center">
                         <h2 id="songTitle" class="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-2">No song selected</h2>
-                        <p id="songArtist" class="text-gray-400 text-sm sm:text-base md:text-lg hidden">Add songs to playlist folder</p>
+                        <p id="songArtist" class="text-white text-sm sm:text-base md:text-lg hidden">Add songs to playlist folder</p>
                     </div>
                     
                     <!-- Progress Bar -->
@@ -245,7 +245,7 @@
                         <div class="progress-bar rounded-full h-2 cursor-pointer" id="progressBar">
                             <div id="progressFill" class="progress-fill h-full rounded-full" style="width: 0%"></div>
                         </div>
-                        <div class="flex justify-between text-xs text-gray-400 mt-2">
+                        <div class="flex justify-between text-xs text-white mt-2">
                             <span id="currentTime">0:00</span>
                             <span id="duration">0:00</span>
                         </div>
@@ -275,11 +275,11 @@
                     
                     <!-- Volume Control -->
                     <div class="flex items-center justify-center gap-3 md:gap-4">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
                         <input type="range" id="volumeSlider" class="volume-slider w-32 sm:w-40" min="0" max="100" value="80">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                         </svg>
                     </div>
@@ -289,106 +289,104 @@
         
         
         <!-- Effects Toggle Button -->
-        <button id="effectsToggle" class="toggle-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-cyan-500 text-white flex items-center justify-center">
+        <button id="effectsToggle" class="toggle-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur-md">
             <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
             </svg>
         </button>
         
         <!-- Effects Panel -->
-        <div id="effectsPanel" class="effects-panel fixed bottom-16 right-4 md:bottom-24 md:right-6 w-72 sm:w-80 md:w-96 max-h-[70vh] md:max-h-[80vh] overflow-y-auto rounded-2xl p-4 md:p-5 hidden scrollbar-thin">
+        <div id="effectsPanel" class="effects-panel fixed bottom-16 right-4 md:bottom-24 md:right-6 w-72 sm:w-80 md:w-96 max-h-[70vh] md:max-h-[80vh] overflow-y-auto rounded-2xl p-4 md:p-5 hidden scrollbar-thin backdrop-blur-xl bg-gray-900/90 border border-white/10">
             <h3 class="text-white font-semibold mb-5 text-lg">Audio Effects</h3>
             
             <!-- Speed Control -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-3 block">Speed (Slowed)</label>
+                <label class="text-white text-sm mb-3 block">Speed (Slowed)</label>
                 <div class="flex gap-2">
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="0.5">0.5x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="0.75">0.75x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg active text-sm" data-speed="1">1x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="1.25">1.25x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="1.5">1.5x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-speed="0.5">0.5x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-speed="0.75">0.75x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg active text-sm backdrop-blur-sm" data-speed="1">1x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-speed="1.25">1.25x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-speed="1.5">1.5x</button>
                 </div>
             </div>
             
             <!-- Reverb -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-2 block">Reverb</label>
+                <label class="text-white text-sm mb-2 block">Reverb</label>
                 <input type="range" id="reverbSlider" class="volume-slider w-full" min="0" max="100" value="0">
             </div>
             
             <!-- Bass -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-2 block">Bass</label>
+                <label class="text-white text-sm mb-2 block">Bass</label>
                 <input type="range" id="bassSlider" class="volume-slider w-full" min="0" max="100" value="50">
             </div>
             
             <!-- Treble -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-2 block">Treble</label>
+                <label class="text-white text-sm mb-2 block">Treble</label>
                 <input type="range" id="trebleSlider" class="volume-slider w-full" min="0" max="100" value="50">
             </div>
             
             <!-- Graphic Equalizer -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-3 block">Graphic Equalizer</label>
+                <label class="text-white text-sm mb-3 block">Graphic Equalizer</label>
                 <div class="flex justify-between gap-2 h-28">
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="60">
-                        <span class="text-xs text-gray-400 mt-2">60Hz</span>
+                        <span class="text-xs text-white mt-2">60Hz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="170">
-                        <span class="text-xs text-gray-400 mt-2">170Hz</span>
+                        <span class="text-xs text-white mt-2">170Hz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="310">
-                        <span class="text-xs text-gray-400 mt-2">310Hz</span>
+                        <span class="text-xs text-white mt-2">310Hz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="600">
-                        <span class="text-xs text-gray-400 mt-2">600Hz</span>
+                        <span class="text-xs text-white mt-2">600Hz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="1000">
-                        <span class="text-xs text-gray-400 mt-2">1kHz</span>
+                        <span class="text-xs text-white mt-2">1kHz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="3000">
-                        <span class="text-xs text-gray-400 mt-2">3kHz</span>
+                        <span class="text-xs text-white mt-2">3kHz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="6000">
-                        <span class="text-xs text-gray-400 mt-2">6kHz</span>
+                        <span class="text-xs text-white mt-2">6kHz</span>
                     </div>
                     <div class="flex flex-col items-center">
                         <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="12000">
-                        <span class="text-xs text-gray-400 mt-2">12kHz</span>
+                        <span class="text-xs text-white mt-2">12kHz</span>
                     </div>
                 </div>
             </div>
             
             <!-- Dialog/Drality -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-2 block">Dialog Clarity</label>
+                <label class="text-white text-sm mb-2 block">Dialog Clarity</label>
                 <input type="range" id="dialogSlider" class="volume-slider w-full" min="0" max="100" value="50">
             </div>
             
             <!-- Spatial Audio (8D/16D) -->
             <div class="mb-5">
-                <label class="text-gray-300 text-sm mb-3 block">Spatial Audio</label>
+                <label class="text-white text-sm mb-3 block">Spatial Audio</label>
                 <div class="flex gap-2">
-                    <button class="spatial-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-spatial="off">Off</button>
-                    <button class="spatial-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-spatial="8d">8D</button>
-                    <button class="spatial-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-spatial="16d">16D</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-spatial="off">Off</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-spatial="8d">8D</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-white/10 text-white text-sm backdrop-blur-sm" data-spatial="16d">16D</button>
                 </div>
             </div>
             
             <!-- Reset to Default -->
             <div class="pt-4 border-t border-white/10">
-                <button id="resetBtn" class="reset-btn w-full py-2 rounded-lg text-gray-300 text-sm border border-white/10">
-                    Reset to Default
-                </button>
+                <button id="resetBtn" class="reset-btn w-full py-2 rounded-lg text-white text-sm border border-white/10 backdrop-blur-sm bg-white/5 hover:bg-white/10">Reset to Default</button>
             </div>
         </div>
     </div>
@@ -739,7 +737,9 @@
             durationEl.textContent = formatTime(audioPlayer.duration);
         });
         
-        audioPlayer.addEventListener('ended', nextSong);
+        audioPlayer.addEventListener('ended', () => {
+            setTimeout(nextSong, 1500);
+        });
         
         progressBar.addEventListener('click', (e) => {
             const rect = progressBar.getBoundingClientRect();
