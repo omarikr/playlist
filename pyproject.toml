@@ -1,2 +1,9 @@
+[project]
+name = "music-player"
+version = "1.0.0"
+dependencies = [
+    "mutagen"
+]
+
 [tool.vercel]
 entrypoint = "api.playlist:app"
