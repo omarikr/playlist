@@ -99,5 +99,5 @@ def handler(request):
         }
 
 # Vercel entry point - compatible with Vercel Python runtime
-def app(request, context=None):
+def app(request):
     return handler(request)
