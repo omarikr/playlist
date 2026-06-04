@@ -12,7 +12,7 @@ from playlist import handler as playlist_handler
 from reorder import handler as reorder_handler
 from serve_file import handler as serve_file_handler
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.')
 CORS(app)
 
 class VercelRequest:
@@ -60,5 +60,13 @@ def index():
     index_path = Path(__file__).parent / 'index.html'
     return send_file(index_path)
 
+@app.route('/<path:filename>', methods=['GET'])
+def serve_static(filename):
+    """Serve static files like background.webp"""
+    file_path = Path(__file__).parent / filename
+    if file_path.exists() and file_path.is_file():
+        return send_file(file_path)
+    return 'File not found', 404
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)

@@ -305,6 +305,9 @@
             </svg>
         </button>
         
+        <!-- Playlist Panel -->
+        <div id="playlist" class="glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto"></div>
+        
         <!-- Effects Panel -->
         <div id="effectsPanel" class="effects-panel fixed bottom-16 right-4 md:bottom-24 md:right-6 w-72 sm:w-80 md:w-96 max-h-[70vh] md:max-h-[80vh] overflow-y-auto rounded-2xl p-4 md:p-5 hidden scrollbar-thin backdrop-blur-xl bg-gray-900/90 border border-white/10">
             <h3 class="text-white font-semibold mb-5 text-lg">Audio Effects</h3>
@@ -511,6 +514,7 @@
                 
                 if (playlist.length > 0) {
                     loadSong(0);
+                    renderPlaylist();
                     // Auto-play first song
                     playSong();
                 }
