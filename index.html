@@ -8,12 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ff6b9d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 12 12, auto;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%233b82f6"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 12 12, auto;
         }
         
         body {
             font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background: url('https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg') center center fixed;
+            background-size: cover;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -26,23 +27,21 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(196, 69, 105, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(139, 42, 78, 0.1) 0%, transparent 50%);
+            background: rgba(0, 0, 0, 0.2);
             pointer-events: none;
             z-index: 0;
         }
         
         .glass-card {
-            background: rgba(20, 20, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
         
         .album-art {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #8b2a4e 100%);
-            box-shadow: 0 8px 32px rgba(255, 107, 157, 0.2);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 50%, #0e7490 100%);
+            box-shadow: 0 8px 32px rgba(6, 182, 212, 0.4);
         }
         
         .progress-bar {
@@ -50,7 +49,7 @@
         }
         
         .progress-fill {
-            background: linear-gradient(90deg, #ff6b9d, #ff8fab);
+            background: linear-gradient(90deg, #06b6d4, #22d3ee);
         }
         
         .volume-slider {
@@ -67,7 +66,7 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #ff6b9d;
+            background: #06b6d4;
             cursor: pointer;
         }
         
@@ -76,7 +75,8 @@
         }
         
         .control-btn:hover {
-            color: #ff6b9d;
+            color: #e0f2fe;
+            transform: scale(1.1);
         }
         
         .control-btn:active {
@@ -84,7 +84,7 @@
         }
         
         .play-btn {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             transition: all 0.2s ease;
         }
         
@@ -119,7 +119,7 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #ff6b9d;
+            background: #06b6d4;
             cursor: pointer;
         }
         
@@ -129,17 +129,17 @@
         }
         
         .playlist-item:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(255, 107, 157, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(6, 182, 212, 0.4);
         }
         
         .playlist-item.active {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 107, 157, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(6, 182, 212, 0.5);
         }
         
         .playlist-item.active .song-title {
-            color: #ff6b9d;
+            color: #06b6d4;
         }
         
         .playlist-item.dragging {
@@ -148,8 +148,8 @@
         }
         
         .playlist-item.drag-over {
-            border-color: #ff6b9d;
-            background: rgba(255, 107, 157, 0.1);
+            border-color: #06b6d4;
+            background: rgba(6, 182, 212, 0.15);
         }
         
         .toggle-btn {
@@ -165,11 +165,11 @@
         }
         
         .speed-btn:hover {
-            background: rgba(255, 107, 157, 0.3);
+            background: rgba(6, 182, 212, 0.3);
         }
         
         .speed-btn.active {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
         }
         
@@ -195,11 +195,11 @@
         }
         
         .spatial-btn:hover {
-            background: rgba(255, 107, 157, 0.3);
+            background: rgba(6, 182, 212, 0.3);
         }
         
         .spatial-btn.active {
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
             color: white;
         }
         
@@ -215,33 +215,33 @@
 <body class="flex items-center justify-center p-6">
     <div class="w-full max-w-5xl">
         <!-- Welcome Message -->
-        <div class="text-center mb-10">
-            <h1 class="text-4xl font-light text-white mb-2 tracking-wide">Welcome, Omar.</h1>
-            <p class="text-2xl text-pink-300 font-light">Depression again?</p>
+        <div class="text-center mb-6 md:mb-10 px-4">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white mb-3 md:mb-4 tracking-wide drop-shadow-lg">Greetings, thanks for visiting.</h1>
+            <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-white font-light drop-shadow-md px-2">I made this for random reasons, but hope you enjoy listening to my playlist.</p>
         </div>
         
         <!-- Main Player -->
-        <div class="glass-card rounded-3xl p-8 mb-6">
-            <div class="flex gap-8">
+        <div class="glass-card rounded-3xl p-6 md:p-8 mb-6 max-w-2xl mx-auto">
+            <div class="flex flex-col items-center gap-4 md:gap-6">
                 <!-- Album Art -->
                 <div class="flex-shrink-0">
-                    <div id="albumArt" class="album-art w-56 h-56 rounded-2xl flex items-center justify-center">
-                        <svg class="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <div id="albumArt" class="album-art w-40 h-40 sm:w-48 sm:h-48 md:w-64 md:h-64 rounded-3xl flex items-center justify-center">
+                        <svg class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                         </svg>
                     </div>
                 </div>
                 
                 <!-- Song Info & Controls -->
-                <div class="flex-1 flex flex-col justify-center">
+                <div class="flex-1 flex flex-col justify-center w-full">
                     <!-- Song Info -->
-                    <div class="mb-6">
-                        <h2 id="songTitle" class="text-3xl font-semibold text-white mb-2">No song selected</h2>
-                        <p id="songArtist" class="text-gray-400 text-lg">Add songs to playlist folder</p>
+                    <div class="mb-4 md:mb-6 text-center">
+                        <h2 id="songTitle" class="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-2">No song selected</h2>
+                        <p id="songArtist" class="text-gray-400 text-sm sm:text-base md:text-lg hidden">Add songs to playlist folder</p>
                     </div>
                     
                     <!-- Progress Bar -->
-                    <div class="mb-6">
+                    <div class="mb-4 md:mb-6">
                         <div class="progress-bar rounded-full h-2 cursor-pointer" id="progressBar">
                             <div id="progressFill" class="progress-fill h-full rounded-full" style="width: 0%"></div>
                         </div>
@@ -252,34 +252,34 @@
                     </div>
                     
                     <!-- Controls -->
-                    <div class="flex items-center justify-center gap-8 mb-6">
+                    <div class="flex items-center justify-center gap-6 md:gap-8 mb-4 md:mb-6">
                         <button id="prevBtn" class="control-btn text-white">
-                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                             </svg>
                         </button>
-                        <button id="playPauseBtn" class="play-btn w-16 h-16 rounded-full text-white flex items-center justify-center">
-                            <svg id="playIcon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <button id="playPauseBtn" class="play-btn w-14 h-14 sm:w-16 sm:h-16 rounded-full text-white flex items-center justify-center">
+                            <svg id="playIcon" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                             </svg>
-                            <svg id="pauseIcon" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24">
+                            <svg id="pauseIcon" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 hidden" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                             </svg>
                         </button>
                         <button id="nextBtn" class="control-btn text-white">
-                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                             </svg>
                         </button>
                     </div>
                     
                     <!-- Volume Control -->
-                    <div class="flex items-center justify-center gap-4">
-                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center justify-center gap-3 md:gap-4">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
-                        <input type="range" id="volumeSlider" class="volume-slider w-40" min="0" max="100" value="80">
-                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                        <input type="range" id="volumeSlider" class="volume-slider w-32 sm:w-40" min="0" max="100" value="80">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                         </svg>
                     </div>
@@ -287,37 +287,27 @@
             </div>
         </div>
         
-        <!-- Playlist -->
-        <div class="glass-card rounded-2xl p-5 mb-4 max-h-96 overflow-y-auto scrollbar-thin">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-white font-semibold text-lg">Playlist</h3>
-                <span class="text-gray-400 text-sm">Drag to reorder</span>
-            </div>
-            <div id="playlist" class="space-y-2">
-                <p class="text-gray-400 text-sm text-center py-8">No songs in playlist. Add MP3/MP4 files to the playlist folder.</p>
-            </div>
-        </div>
         
         <!-- Effects Toggle Button -->
-        <button id="effectsToggle" class="toggle-btn fixed bottom-6 right-6 w-14 h-14 rounded-full bg-pink-500 text-white flex items-center justify-center">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+        <button id="effectsToggle" class="toggle-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-cyan-500 text-white flex items-center justify-center">
+            <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
             </svg>
         </button>
         
         <!-- Effects Panel -->
-        <div id="effectsPanel" class="effects-panel fixed bottom-24 right-6 w-96 rounded-2xl p-5 hidden">
+        <div id="effectsPanel" class="effects-panel fixed bottom-16 right-4 md:bottom-24 md:right-6 w-72 sm:w-80 md:w-96 max-h-[70vh] md:max-h-[80vh] overflow-y-auto rounded-2xl p-4 md:p-5 hidden scrollbar-thin">
             <h3 class="text-white font-semibold mb-5 text-lg">Audio Effects</h3>
             
             <!-- Speed Control -->
             <div class="mb-5">
                 <label class="text-gray-300 text-sm mb-3 block">Speed (Slowed)</label>
                 <div class="flex gap-2">
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="0.5">0.5x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="0.75">0.75x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="0.5">0.5x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="0.75">0.75x</button>
                     <button class="speed-btn px-4 py-2 rounded-lg active text-sm" data-speed="1">1x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="1.25">1.25x</button>
-                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="1.5">1.5x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="1.25">1.25x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-speed="1.5">1.5x</button>
                 </div>
             </div>
             
@@ -388,9 +378,9 @@
             <div class="mb-5">
                 <label class="text-gray-300 text-sm mb-3 block">Spatial Audio</label>
                 <div class="flex gap-2">
-                    <button class="spatial-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-spatial="off">Off</button>
-                    <button class="spatial-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-spatial="8d">8D</button>
-                    <button class="spatial-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-spatial="16d">16D</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-spatial="off">Off</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-spatial="8d">8D</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 text-sm" data-spatial="16d">16D</button>
                 </div>
             </div>
             
@@ -510,8 +500,9 @@
                 playlist = data.filter(f => f.filename.endsWith('.mp3') || f.filename.endsWith('.mp4') || f.filename.endsWith('.wav') || f.filename.endsWith('.m4a'));
                 
                 if (playlist.length > 0) {
-                    renderPlaylist();
                     loadSong(0);
+                    // Auto-play first song
+                    playSong();
                 }
             } catch (error) {
                 console.error('Error loading playlist:', error);
@@ -656,12 +647,31 @@
             
             audioPlayer.src = `/playlist/${playlist[index].filename}`;
             songTitle.textContent = playlist[index].title || formatSongName(playlist[index].filename);
-            songArtist.textContent = playlist[index].artist || 'Unknown Artist';
             
-            // Update playlist UI
-            document.querySelectorAll('.playlist-item').forEach((item, i) => {
-                item.classList.toggle('active', i === index);
-            });
+            // Hide artist if unknown
+            const artist = playlist[index].artist || 'Unknown Artist';
+            if (artist === 'Unknown Artist' || !artist) {
+                songArtist.classList.add('hidden');
+            } else {
+                songArtist.textContent = artist;
+                songArtist.classList.remove('hidden');
+            }
+            
+            // Update Media Session API
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: songTitle.textContent,
+                    artist: artist === 'Unknown Artist' ? '' : artist,
+                    artwork: [
+                        { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '96x96', type: 'image/jpeg' },
+                        { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '128x128', type: 'image/jpeg' },
+                        { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '192x192', type: 'image/jpeg' },
+                        { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '256x256', type: 'image/jpeg' },
+                        { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '384x384', type: 'image/jpeg' },
+                        { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '512x512', type: 'image/jpeg' },
+                    ]
+                });
+            }
         }
         
         function playSong() {
@@ -670,6 +680,11 @@
             isPlaying = true;
             playIcon.classList.add('hidden');
             pauseIcon.classList.remove('hidden');
+            
+            // Update Media Session API
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.playbackState = 'playing';
+            }
         }
         
         function pauseSong() {
@@ -677,6 +692,11 @@
             isPlaying = false;
             playIcon.classList.remove('hidden');
             pauseIcon.classList.add('hidden');
+            
+            // Update Media Session API
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.playbackState = 'paused';
+            }
         }
         
         function prevSong() {
@@ -891,6 +911,31 @@
         // Initialize
         loadPlaylist();
         audioPlayer.volume = 0.8;
+        
+        // Setup Media Session API for background playback
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', () => {
+                playSong();
+            });
+            
+            navigator.mediaSession.setActionHandler('pause', () => {
+                pauseSong();
+            });
+            
+            navigator.mediaSession.setActionHandler('previoustrack', () => {
+                prevSong();
+            });
+            
+            navigator.mediaSession.setActionHandler('nexttrack', () => {
+                nextSong();
+            });
+            
+            navigator.mediaSession.setActionHandler('seekto', (details) => {
+                if (details.seekTime && !isNaN(details.seekTime)) {
+                    audioPlayer.currentTime = details.seekTime;
+                }
+            });
+        }
     </script>
 </body>
 </html>

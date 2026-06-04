@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/playlist",
+      "dest": "/api/playlist.py"
+    },
+    {
+      "src": "/reorder",
+      "dest": "/api/reorder.py"
+    },
+    {
+      "src": "/playlist/(.*)",
+      "dest": "/api/serve_file.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
+}
