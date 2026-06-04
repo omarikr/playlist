@@ -99,5 +99,6 @@ def handler(request):
         'body': json.dumps(files)
     }
 
-# Vercel entry point
-app = handler
+# Vercel entry point - compatible with Vercel Python runtime
+def app(request, context=None):
+    return handler(request)

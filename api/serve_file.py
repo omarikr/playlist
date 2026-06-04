@@ -45,5 +45,6 @@ def handler(request):
         'isBase64Encoded': True
     }
 
-# Vercel entry point
-app = handler
+# Vercel entry point - compatible with Vercel Python runtime
+def app(request, context=None):
+    return handler(request)
