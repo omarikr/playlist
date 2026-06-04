@@ -10,6 +10,8 @@ def handler(request):
     playlist_dir = Path(__file__).parent.parent / 'playlist'
     file_path = playlist_dir / filename
     
+    print(f"Serving file: {file_path}, exists: {file_path.exists()}")
+    
     if not file_path.exists() or not file_path.is_file():
         return {
             'statusCode': 404,
@@ -19,7 +21,7 @@ def handler(request):
             'body': 'File not found'
         }
     
-    # Determine content type based on file extension
+    # Determine content type based on file extensions
     content_type = 'application/octet-stream'
     if filename.endswith('.mp3'):
         content_type = 'audio/mpeg'

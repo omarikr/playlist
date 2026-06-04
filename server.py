@@ -40,6 +40,11 @@ def reorder():
     response = reorder_handler(vercel_request)
     return Response(response['body'], status=response['statusCode'], headers=response['headers'])
 
+@app.route('/', methods=['GET'])
+def index():
+    index_path = Path(__file__).parent / 'index.html'
+    return send_file(index_path)
+
 @app.route('/playlist/<filename>', methods=['GET'])
 def serve_file(filename):
     vercel_request = VercelRequest('GET', f'/playlist/{filename}')
@@ -54,11 +59,6 @@ def serve_file(filename):
             return Response(response['body'], status=response['statusCode'], headers=response['headers'])
     else:
         return Response(response['body'], status=response['statusCode'], headers=response['headers'])
-
-@app.route('/', methods=['GET'])
-def index():
-    index_path = Path(__file__).parent / 'index.html'
-    return send_file(index_path)
 
 @app.route('/<path:filename>', methods=['GET'])
 def serve_static(filename):

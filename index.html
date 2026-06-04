@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>mix</title>
-    <link rel="icon" href="background.webp">
+    <link rel="icon" href="/background.webp">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -14,7 +14,7 @@
         
         body {
             font-family: 'Outfit', sans-serif;
-            background: url('background.webp') center center fixed;
+            background: url('/background.webp') center center fixed;
             background-size: cover;
             min-height: 100vh;
             overflow-x: hidden;
@@ -253,17 +253,12 @@
                     
                     <!-- Controls -->
                     <div class="flex items-center justify-center gap-4 md:gap-6 mb-4 md:mb-6">
-                        <button id="shuffleBtn" class="control-btn" style="color: #126317" title="Shuffle">
-                            <svg class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
-                            </svg>
-                        </button>
-                        <button id="prevBtn" class="control-btn" style="color: #166534">
+                        <button id="prevBtn" class="control-btn" style="color: white">
                             <svg class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                             </svg>
                         </button>
-                        <button id="playPauseBtn" class="play-btn w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center" style="color: #126317">
+                        <button id="playPauseBtn" class="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center" style="color: white">
                             <svg id="playIcon" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                             </svg>
@@ -271,25 +266,20 @@
                                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                             </svg>
                         </button>
-                        <button id="nextBtn" class="control-btn" style="color: #166534">
+                        <button id="nextBtn" class="control-btn" style="color: white">
                             <svg class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-                            </svg>
-                        </button>
-                        <button id="loopBtn" class="control-btn" style="color: #126317" title="Loop">
-                            <svg class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
                             </svg>
                         </button>
                     </div>
                     
                     <!-- Volume Control -->
                     <div class="flex items-center justify-center gap-3 md:gap-4">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: #126317" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
                         <input type="range" id="volumeSlider" class="volume-slider w-32 sm:w-40" min="0" max="100" value="80">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: #126317" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                         </svg>
                     </div>
@@ -297,16 +287,12 @@
             </div>
         </div>
         
-        
         <!-- Effects Toggle Button -->
-        <button id="effectsToggle" class="toggle-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md" style="color: #126317">
+        <button id="effectsToggle" class="fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md" style="color: white">
             <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
             </svg>
         </button>
-        
-        <!-- Playlist Panel -->
-        <div id="playlist" class="glass-card rounded-3xl p-6 md:p-8 max-w-2xl mx-auto"></div>
         
         <!-- Effects Panel -->
         <div id="effectsPanel" class="effects-panel fixed bottom-16 right-4 md:bottom-24 md:right-6 w-72 sm:w-80 md:w-96 max-h-[70vh] md:max-h-[80vh] overflow-y-auto rounded-2xl p-4 md:p-5 hidden scrollbar-thin backdrop-blur-xl bg-gray-900/90 border border-white/10">
@@ -381,7 +367,7 @@
                 </div>
             </div>
             
-            <!-- Dialog/Drality -->
+            <!-- Dialog Clarity -->
             <div class="mb-5">
                 <label class="text-white text-sm mb-2 block">Dialog Clarity</label>
                 <input type="range" id="dialogSlider" class="volume-slider w-full" min="0" max="100" value="50">
@@ -420,16 +406,12 @@
         const volumeSlider = document.getElementById('volumeSlider');
         const songTitle = document.getElementById('songTitle');
         const songArtist = document.getElementById('songArtist');
-        const playlistEl = document.getElementById('playlist');
         const effectsToggle = document.getElementById('effectsToggle');
         const effectsPanel = document.getElementById('effectsPanel');
         
         let playlist = [];
         let currentIndex = 0;
         let isPlaying = false;
-        let draggedItem = null;
-        let isShuffle = false;
-        let isLoop = false;
         
         // Audio Context for effects
         let audioContext;
@@ -514,135 +496,9 @@
                 
                 if (playlist.length > 0) {
                     loadSong(0);
-                    renderPlaylist();
-                    // Auto-play first song
-                    playSong();
                 }
             } catch (error) {
                 console.error('Error loading playlist:', error);
-            }
-        }
-        
-        function renderPlaylist() {
-            playlistEl.innerHTML = '';
-            playlist.forEach((song, index) => {
-                const div = document.createElement('div');
-                div.className = `playlist-item p-4 rounded-xl cursor-pointer flex items-center gap-4 ${index === currentIndex ? 'active' : ''}`;
-                div.draggable = true;
-                div.dataset.index = index;
-                
-                const displayName = song.title || formatSongName(song.filename);
-                const displayArtist = song.artist || 'Unknown Artist';
-                
-                div.innerHTML = `
-                    <div class="drag-handle text-gray-500 cursor-grab p-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
-                    </div>
-                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center flex-shrink-0">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="song-title text-white text-base font-medium truncate">${displayName}</p>
-                        <p class="text-gray-400 text-sm truncate">${displayArtist}</p>
-                    </div>
-                `;
-                
-                // Drag handle specific events
-                const dragHandle = div.querySelector('.drag-handle');
-                dragHandle.addEventListener('mousedown', (e) => {
-                    div.setAttribute('draggable', 'true');
-                });
-                
-                // Click to play
-                div.addEventListener('click', (e) => {
-                    if (!div.classList.contains('dragging')) {
-                        currentIndex = index;
-                        loadSong(index);
-                        playSong();
-                    }
-                });
-                
-                // Drag events
-                div.addEventListener('dragstart', handleDragStart);
-                div.addEventListener('dragend', handleDragEnd);
-                div.addEventListener('dragover', handleDragOver);
-                div.addEventListener('drop', handleDrop);
-                div.addEventListener('dragleave', handleDragLeave);
-                
-                playlistEl.appendChild(div);
-            });
-        }
-        
-        function handleDragStart(e) {
-            draggedItem = this;
-            this.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-        }
-        
-        function handleDragEnd(e) {
-            this.classList.remove('dragging');
-            document.querySelectorAll('.playlist-item').forEach(item => {
-                item.classList.remove('drag-over');
-            });
-        }
-        
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            if (this !== draggedItem) {
-                this.classList.add('drag-over');
-            }
-        }
-        
-        function handleDragLeave(e) {
-            this.classList.remove('drag-over');
-        }
-        
-        async function handleDrop(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
-            
-            if (this !== draggedItem) {
-                const fromIndex = parseInt(draggedItem.dataset.index);
-                const toIndex = parseInt(this.dataset.index);
-                
-                // Reorder array
-                const item = playlist.splice(fromIndex, 1)[0];
-                playlist.splice(toIndex, 0, item);
-                
-                // Update current index if needed
-                if (currentIndex === fromIndex) {
-                    currentIndex = toIndex;
-                } else if (fromIndex < currentIndex && toIndex >= currentIndex) {
-                    currentIndex--;
-                } else if (fromIndex > currentIndex && toIndex <= currentIndex) {
-                    currentIndex++;
-                }
-                
-                // Send reorder request to server
-                await reorderPlaylist(playlist);
-                
-                // Re-render
-                renderPlaylist();
-            }
-        }
-        
-        async function reorderPlaylist(newOrder) {
-            try {
-                const filenames = newOrder.map(song => song.filename);
-                await fetch('/reorder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ files: filenames }),
-                });
-            } catch (error) {
-                console.error('Error reordering playlist:', error);
             }
         }
         
@@ -720,25 +576,9 @@
         }
         
         function nextSong() {
-            if (isLoop) {
-                // Loop current song
-                audioPlayer.currentTime = 0;
-                if (isPlaying) playSong();
-            } else if (isShuffle) {
-                // Play random song
-                let newIndex;
-                do {
-                    newIndex = Math.floor(Math.random() * playlist.length);
-                } while (newIndex === currentIndex && playlist.length > 1);
-                currentIndex = newIndex;
-                loadSong(currentIndex);
-                if (isPlaying) playSong();
-            } else {
-                // Normal next
-                currentIndex = (currentIndex + 1) % playlist.length;
-                loadSong(currentIndex);
-                if (isPlaying) playSong();
-            }
+            currentIndex = (currentIndex + 1) % playlist.length;
+            loadSong(currentIndex);
+            if (isPlaying) playSong();
         }
         
         function formatTime(seconds) {
@@ -758,20 +598,6 @@
         
         prevBtn.addEventListener('click', prevSong);
         nextBtn.addEventListener('click', nextSong);
-        
-        // Shuffle button
-        const shuffleBtn = document.getElementById('shuffleBtn');
-        shuffleBtn.addEventListener('click', () => {
-            isShuffle = !isShuffle;
-            shuffleBtn.style.opacity = isShuffle ? '1' : '0.5';
-        });
-        
-        // Loop button
-        const loopBtn = document.getElementById('loopBtn');
-        loopBtn.addEventListener('click', () => {
-            isLoop = !isLoop;
-            loopBtn.style.opacity = isLoop ? '1' : '0.5';
-        });
         
         audioPlayer.addEventListener('timeupdate', () => {
             const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
