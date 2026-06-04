@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="%23ff6b9d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>') 12 12, auto;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(196, 69, 105, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(139, 42, 78, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .glass-card {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .album-art {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #8b2a4e 100%);
+            box-shadow: 0 8px 32px rgba(255, 107, 157, 0.2);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b9d, #ff8fab);
+        }
+        
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            height: 4px;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ff6b9d;
+            cursor: pointer;
+        }
+        
+        .control-btn {
+            transition: all 0.15s ease;
+        }
+        
+        .control-btn:hover {
+            color: #ff6b9d;
+        }
+        
+        .control-btn:active {
+            transform: scale(0.92);
+        }
+        
+        .play-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            transition: all 0.2s ease;
+        }
+        
+        .play-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .play-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .effects-panel {
+            background: rgba(15, 15, 20, 0.95);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .eq-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 6px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+        }
+        
+        .eq-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ff6b9d;
+            cursor: pointer;
+        }
+        
+        .playlist-item {
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        
+        .playlist-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 107, 157, 0.2);
+        }
+        
+        .playlist-item.active {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 107, 157, 0.3);
+        }
+        
+        .playlist-item.active .song-title {
+            color: #ff6b9d;
+        }
+        
+        .playlist-item.dragging {
+            opacity: 0.5;
+            transform: scale(0.98);
+        }
+        
+        .playlist-item.drag-over {
+            border-color: #ff6b9d;
+            background: rgba(255, 107, 157, 0.1);
+        }
+        
+        .toggle-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .toggle-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .speed-btn {
+            transition: all 0.15s ease;
+        }
+        
+        .speed-btn:hover {
+            background: rgba(255, 107, 157, 0.3);
+        }
+        
+        .speed-btn.active {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .spatial-btn {
+            transition: all 0.15s ease;
+        }
+        
+        .spatial-btn:hover {
+            background: rgba(255, 107, 157, 0.3);
+        }
+        
+        .spatial-btn.active {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+        }
+        
+        .reset-btn {
+            transition: all 0.15s ease;
+        }
+        
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-6">
+    <div class="w-full max-w-5xl">
+        <!-- Welcome Message -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-light text-white mb-2 tracking-wide">Welcome, Omar.</h1>
+            <p class="text-2xl text-pink-300 font-light">Depression again?</p>
+        </div>
+        
+        <!-- Main Player -->
+        <div class="glass-card rounded-3xl p-8 mb-6">
+            <div class="flex gap-8">
+                <!-- Album Art -->
+                <div class="flex-shrink-0">
+                    <div id="albumArt" class="album-art w-56 h-56 rounded-2xl flex items-center justify-center">
+                        <svg class="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Song Info & Controls -->
+                <div class="flex-1 flex flex-col justify-center">
+                    <!-- Song Info -->
+                    <div class="mb-6">
+                        <h2 id="songTitle" class="text-3xl font-semibold text-white mb-2">No song selected</h2>
+                        <p id="songArtist" class="text-gray-400 text-lg">Add songs to playlist folder</p>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mb-6">
+                        <div class="progress-bar rounded-full h-2 cursor-pointer" id="progressBar">
+                            <div id="progressFill" class="progress-fill h-full rounded-full" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 mt-2">
+                            <span id="currentTime">0:00</span>
+                            <span id="duration">0:00</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Controls -->
+                    <div class="flex items-center justify-center gap-8 mb-6">
+                        <button id="prevBtn" class="control-btn text-white">
+                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                            </svg>
+                        </button>
+                        <button id="playPauseBtn" class="play-btn w-16 h-16 rounded-full text-white flex items-center justify-center">
+                            <svg id="playIcon" class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg id="pauseIcon" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                            </svg>
+                        </button>
+                        <button id="nextBtn" class="control-btn text-white">
+                            <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Volume Control -->
+                    <div class="flex items-center justify-center gap-4">
+                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
+                        </svg>
+                        <input type="range" id="volumeSlider" class="volume-slider w-40" min="0" max="100" value="80">
+                        <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Playlist -->
+        <div class="glass-card rounded-2xl p-5 mb-4 max-h-96 overflow-y-auto scrollbar-thin">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-white font-semibold text-lg">Playlist</h3>
+                <span class="text-gray-400 text-sm">Drag to reorder</span>
+            </div>
+            <div id="playlist" class="space-y-2">
+                <p class="text-gray-400 text-sm text-center py-8">No songs in playlist. Add MP3/MP4 files to the playlist folder.</p>
+            </div>
+        </div>
+        
+        <!-- Effects Toggle Button -->
+        <button id="effectsToggle" class="toggle-btn fixed bottom-6 right-6 w-14 h-14 rounded-full bg-pink-500 text-white flex items-center justify-center">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
+            </svg>
+        </button>
+        
+        <!-- Effects Panel -->
+        <div id="effectsPanel" class="effects-panel fixed bottom-24 right-6 w-96 rounded-2xl p-5 hidden">
+            <h3 class="text-white font-semibold mb-5 text-lg">Audio Effects</h3>
+            
+            <!-- Speed Control -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-3 block">Speed (Slowed)</label>
+                <div class="flex gap-2">
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="0.5">0.5x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="0.75">0.75x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg active text-sm" data-speed="1">1x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="1.25">1.25x</button>
+                    <button class="speed-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-speed="1.5">1.5x</button>
+                </div>
+            </div>
+            
+            <!-- Reverb -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-2 block">Reverb</label>
+                <input type="range" id="reverbSlider" class="volume-slider w-full" min="0" max="100" value="0">
+            </div>
+            
+            <!-- Bass -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-2 block">Bass</label>
+                <input type="range" id="bassSlider" class="volume-slider w-full" min="0" max="100" value="50">
+            </div>
+            
+            <!-- Treble -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-2 block">Treble</label>
+                <input type="range" id="trebleSlider" class="volume-slider w-full" min="0" max="100" value="50">
+            </div>
+            
+            <!-- Graphic Equalizer -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-3 block">Graphic Equalizer</label>
+                <div class="flex justify-between gap-2 h-28">
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="60">
+                        <span class="text-xs text-gray-400 mt-2">60Hz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="170">
+                        <span class="text-xs text-gray-400 mt-2">170Hz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="310">
+                        <span class="text-xs text-gray-400 mt-2">310Hz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="600">
+                        <span class="text-xs text-gray-400 mt-2">600Hz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="1000">
+                        <span class="text-xs text-gray-400 mt-2">1kHz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="3000">
+                        <span class="text-xs text-gray-400 mt-2">3kHz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="6000">
+                        <span class="text-xs text-gray-400 mt-2">6kHz</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <input type="range" class="eq-slider" orient="vertical" min="0" max="100" value="50" data-freq="12000">
+                        <span class="text-xs text-gray-400 mt-2">12kHz</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dialog/Drality -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-2 block">Dialog Clarity</label>
+                <input type="range" id="dialogSlider" class="volume-slider w-full" min="0" max="100" value="50">
+            </div>
+            
+            <!-- Spatial Audio (8D/16D) -->
+            <div class="mb-5">
+                <label class="text-gray-300 text-sm mb-3 block">Spatial Audio</label>
+                <div class="flex gap-2">
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-spatial="off">Off</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-spatial="8d">8D</button>
+                    <button class="spatial-btn px-4 py-2 rounded-lg bg-pink-500/20 text-pink-300 text-sm" data-spatial="16d">16D</button>
+                </div>
+            </div>
+            
+            <!-- Reset to Default -->
+            <div class="pt-4 border-t border-white/10">
+                <button id="resetBtn" class="reset-btn w-full py-2 rounded-lg text-gray-300 text-sm border border-white/10">
+                    Reset to Default
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="audioPlayer"></audio>
+    
+    <script>
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationEl = document.getElementById('duration');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const songTitle = document.getElementById('songTitle');
+        const songArtist = document.getElementById('songArtist');
+        const playlistEl = document.getElementById('playlist');
+        const effectsToggle = document.getElementById('effectsToggle');
+        const effectsPanel = document.getElementById('effectsPanel');
+        
+        let playlist = [];
+        let currentIndex = 0;
+        let isPlaying = false;
+        let draggedItem = null;
+        
+        // Audio Context for effects
+        let audioContext;
+        let sourceNode;
+        let gainNode;
+        let bassFilter;
+        let trebleFilter;
+        let convolverNode;
+        let eqFilters = [];
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                sourceNode = audioContext.createMediaElementSource(audioPlayer);
+                gainNode = audioContext.createGain();
+                
+                // Bass filter (low shelf)
+                bassFilter = audioContext.createBiquadFilter();
+                bassFilter.type = 'lowshelf';
+                bassFilter.frequency.value = 200;
+                
+                // Treble filter (high shelf)
+                trebleFilter = audioContext.createBiquadFilter();
+                trebleFilter.type = 'highshelf';
+                trebleFilter.frequency.value = 3000;
+                
+                // Create EQ filters
+                const eqFreqs = [60, 170, 310, 600, 1000, 3000, 6000, 12000];
+                eqFreqs.forEach(freq => {
+                    const filter = audioContext.createBiquadFilter();
+                    filter.type = 'peaking';
+                    filter.frequency.value = freq;
+                    filter.Q.value = 1;
+                    filter.gain.value = 0;
+                    eqFilters.push(filter);
+                });
+                
+                // Convolver for reverb
+                convolverNode = audioContext.createConvolver();
+                createReverbImpulse();
+                
+                // Connect nodes
+                sourceNode.connect(bassFilter);
+                bassFilter.connect(trebleFilter);
+                
+                let currentNode = trebleFilter;
+                eqFilters.forEach(filter => {
+                    currentNode.connect(filter);
+                    currentNode = filter;
+                });
+                
+                currentNode.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Bypass convolver by default
+                gainNode.connect(audioContext.destination);
+            }
+        }
+        
+        function createReverbImpulse() {
+            const sampleRate = audioContext.sampleRate;
+            const length = sampleRate * 2;
+            const impulse = audioContext.createBuffer(2, length, sampleRate);
+            
+            for (let channel = 0; channel < 2; channel++) {
+                const channelData = impulse.getChannelData(channel);
+                for (let i = 0; i < length; i++) {
+                    channelData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2);
+                }
+            }
+            
+            convolverNode.buffer = impulse;
+        }
+        
+        // Load playlist from server with metadata
+        async function loadPlaylist() {
+            try {
+                const response = await fetch('/playlist');
+                const data = await response.json();
+                
+                playlist = data.filter(f => f.filename.endsWith('.mp3') || f.filename.endsWith('.mp4') || f.filename.endsWith('.wav') || f.filename.endsWith('.m4a'));
+                
+                if (playlist.length > 0) {
+                    renderPlaylist();
+                    loadSong(0);
+                }
+            } catch (error) {
+                console.error('Error loading playlist:', error);
+            }
+        }
+        
+        function renderPlaylist() {
+            playlistEl.innerHTML = '';
+            playlist.forEach((song, index) => {
+                const div = document.createElement('div');
+                div.className = `playlist-item p-4 rounded-xl cursor-pointer flex items-center gap-4 ${index === currentIndex ? 'active' : ''}`;
+                div.draggable = true;
+                div.dataset.index = index;
+                
+                const displayName = song.title || formatSongName(song.filename);
+                const displayArtist = song.artist || 'Unknown Artist';
+                
+                div.innerHTML = `
+                    <div class="drag-handle text-gray-500 cursor-grab p-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="song-title text-white text-base font-medium truncate">${displayName}</p>
+                        <p class="text-gray-400 text-sm truncate">${displayArtist}</p>
+                    </div>
+                `;
+                
+                // Drag handle specific events
+                const dragHandle = div.querySelector('.drag-handle');
+                dragHandle.addEventListener('mousedown', (e) => {
+                    div.setAttribute('draggable', 'true');
+                });
+                
+                // Click to play
+                div.addEventListener('click', (e) => {
+                    if (!div.classList.contains('dragging')) {
+                        currentIndex = index;
+                        loadSong(index);
+                        playSong();
+                    }
+                });
+                
+                // Drag events
+                div.addEventListener('dragstart', handleDragStart);
+                div.addEventListener('dragend', handleDragEnd);
+                div.addEventListener('dragover', handleDragOver);
+                div.addEventListener('drop', handleDrop);
+                div.addEventListener('dragleave', handleDragLeave);
+                
+                playlistEl.appendChild(div);
+            });
+        }
+        
+        function handleDragStart(e) {
+            draggedItem = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            document.querySelectorAll('.playlist-item').forEach(item => {
+                item.classList.remove('drag-over');
+            });
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            if (this !== draggedItem) {
+                this.classList.add('drag-over');
+            }
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        async function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (this !== draggedItem) {
+                const fromIndex = parseInt(draggedItem.dataset.index);
+                const toIndex = parseInt(this.dataset.index);
+                
+                // Reorder array
+                const item = playlist.splice(fromIndex, 1)[0];
+                playlist.splice(toIndex, 0, item);
+                
+                // Update current index if needed
+                if (currentIndex === fromIndex) {
+                    currentIndex = toIndex;
+                } else if (fromIndex < currentIndex && toIndex >= currentIndex) {
+                    currentIndex--;
+                } else if (fromIndex > currentIndex && toIndex <= currentIndex) {
+                    currentIndex++;
+                }
+                
+                // Send reorder request to server
+                await reorderPlaylist(playlist);
+                
+                // Re-render
+                renderPlaylist();
+            }
+        }
+        
+        async function reorderPlaylist(newOrder) {
+            try {
+                const filenames = newOrder.map(song => song.filename);
+                await fetch('/reorder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ files: filenames }),
+                });
+            } catch (error) {
+                console.error('Error reordering playlist:', error);
+            }
+        }
+        
+        function formatSongName(filename) {
+            // Remove numeric prefix (e.g., "001_", "002_", etc.)
+            let name = filename.replace(/^\d+[._-]/, '');
+            // Remove file extension
+            name = name.replace(/\.[^/.]+$/, '');
+            // Replace underscores and hyphens with spaces
+            name = name.replace(/[-_]/g, ' ');
+            return name;
+        }
+        
+        function loadSong(index) {
+            if (playlist.length === 0) return;
+            
+            audioPlayer.src = `/playlist/${playlist[index].filename}`;
+            songTitle.textContent = playlist[index].title || formatSongName(playlist[index].filename);
+            songArtist.textContent = playlist[index].artist || 'Unknown Artist';
+            
+            // Update playlist UI
+            document.querySelectorAll('.playlist-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+        }
+        
+        function playSong() {
+            initAudioContext();
+            audioPlayer.play();
+            isPlaying = true;
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+        }
+        
+        function pauseSong() {
+            audioPlayer.pause();
+            isPlaying = false;
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        }
+        
+        function prevSong() {
+            currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+            loadSong(currentIndex);
+            if (isPlaying) playSong();
+        }
+        
+        function nextSong() {
+            currentIndex = (currentIndex + 1) % playlist.length;
+            loadSong(currentIndex);
+            if (isPlaying) playSong();
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Event Listeners
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseSong();
+            } else {
+                playSong();
+            }
+        });
+        
+        prevBtn.addEventListener('click', prevSong);
+        nextBtn.addEventListener('click', nextSong);
+        
+        audioPlayer.addEventListener('timeupdate', () => {
+            const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+            progressFill.style.width = `${progress}%`;
+            currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+        });
+        
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatTime(audioPlayer.duration);
+        });
+        
+        audioPlayer.addEventListener('ended', nextSong);
+        
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const percent = (e.clientX - rect.left) / rect.width;
+            audioPlayer.currentTime = percent * audioPlayer.duration;
+        });
+        
+        volumeSlider.addEventListener('input', (e) => {
+            audioPlayer.volume = e.target.value / 100;
+            if (gainNode) {
+                gainNode.gain.value = e.target.value / 100;
+            }
+        });
+        
+        effectsToggle.addEventListener('click', () => {
+            effectsPanel.classList.toggle('hidden');
+        });
+        
+        // Speed controls
+        document.querySelectorAll('.speed-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.speed-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+                audioPlayer.playbackRate = parseFloat(btn.dataset.speed);
+            });
+        });
+        
+        // Reverb control
+        document.getElementById('reverbSlider').addEventListener('input', (e) => {
+            if (!audioContext) return;
+            const value = e.target.value / 100;
+            // Simple reverb simulation using gain
+            if (value > 0) {
+                // Would need proper reverb implementation
+            }
+        });
+        
+        // Bass control
+        document.getElementById('bassSlider').addEventListener('input', (e) => {
+            if (!bassFilter) return;
+            const value = (e.target.value - 50) / 50 * 15;
+            bassFilter.gain.value = value;
+        });
+        
+        // Treble control
+        document.getElementById('trebleSlider').addEventListener('input', (e) => {
+            if (!trebleFilter) return;
+            const value = (e.target.value - 50) / 50 * 15;
+            trebleFilter.gain.value = value;
+        });
+        
+        // EQ controls
+        document.querySelectorAll('.eq-slider').forEach((slider, index) => {
+            slider.addEventListener('input', (e) => {
+                if (!eqFilters[index]) return;
+                const value = (e.target.value - 50) / 50 * 12;
+                eqFilters[index].gain.value = value;
+            });
+        });
+        
+        // Dialog clarity (mid-range boost)
+        document.getElementById('dialogSlider').addEventListener('input', (e) => {
+            if (!eqFilters[3]) return;
+            const value = (e.target.value - 50) / 50 * 10;
+            eqFilters[3].gain.value = value;
+        });
+        
+        // Spatial audio controls (8D/16D)
+        let spatialMode = 'off';
+        let pannerNode = null;
+        let spatialInterval = null;
+        
+        document.querySelectorAll('.spatial-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.spatial-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+                spatialMode = btn.dataset.spatial;
+                applySpatialAudio();
+            });
+        });
+        
+        function applySpatialAudio() {
+            if (!audioContext) return;
+            
+            // Clear existing spatial audio
+            if (spatialInterval) {
+                clearInterval(spatialInterval);
+                spatialInterval = null;
+            }
+            
+            if (spatialMode === 'off') {
+                if (pannerNode) {
+                    pannerNode.pan.value = 0;
+                }
+                return;
+            }
+            
+            // Create panner node if not exists
+            if (!pannerNode) {
+                pannerNode = audioContext.createStereoPanner();
+                // Insert panner node in the audio chain
+                const lastNode = eqFilters.length > 0 ? eqFilters[eqFilters.length - 1] : trebleFilter;
+                lastNode.disconnect();
+                lastNode.connect(pannerNode);
+                pannerNode.connect(gainNode);
+            }
+            
+            const speed = spatialMode === '8d' ? 2000 : 1000;
+            const range = spatialMode === '8d' ? 0.8 : 1;
+            
+            spatialInterval = setInterval(() => {
+                if (!isPlaying) return;
+                const time = Date.now();
+                const panValue = Math.sin(time / speed) * range;
+                if (pannerNode) {
+                    pannerNode.pan.value = panValue;
+                }
+            }, 50);
+        }
+        
+        // Reset to Default
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            // Reset speed
+            document.querySelectorAll('.speed-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            document.querySelector('.speed-btn[data-speed="1"]').classList.add('active');
+            audioPlayer.playbackRate = 1;
+            
+            // Reset sliders
+            document.getElementById('reverbSlider').value = 0;
+            document.getElementById('bassSlider').value = 50;
+            document.getElementById('trebleSlider').value = 50;
+            document.getElementById('dialogSlider').value = 50;
+            
+            // Reset EQ
+            document.querySelectorAll('.eq-slider').forEach(slider => {
+                slider.value = 50;
+            });
+            
+            // Reset spatial audio
+            document.querySelectorAll('.spatial-btn').forEach(b => {
+                b.classList.remove('active');
+            });
+            document.querySelector('.spatial-btn[data-spatial="off"]').classList.add('active');
+            spatialMode = 'off';
+            if (spatialInterval) {
+                clearInterval(spatialInterval);
+                spatialInterval = null;
+            }
+            if (pannerNode) {
+                pannerNode.pan.value = 0;
+            }
+            
+            // Reset audio filters
+            if (bassFilter) bassFilter.gain.value = 0;
+            if (trebleFilter) trebleFilter.gain.value = 0;
+            if (eqFilters) {
+                eqFilters.forEach(filter => {
+                    filter.gain.value = 0;
+                });
+            }
+        });
+        
+        // Initialize
+        loadPlaylist();
+        audioPlayer.volume = 0.8;
+    </script>
+</body>
+</html>
