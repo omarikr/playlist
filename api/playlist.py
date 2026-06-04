@@ -2,7 +2,6 @@ import json
 import os
 import re
 from pathlib import Path
-from http.server import SimpleHTTPRequestHandler
 
 # Try to import mutagen for metadata extraction
 try:
@@ -99,3 +98,6 @@ def handler(request):
         },
         'body': json.dumps(files)
     }
+
+# Vercel entry point
+app = handler

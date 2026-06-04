@@ -97,3 +97,6 @@ def handler(request):
             },
             'body': json.dumps({'error': str(e)})
         }
+
+# Vercel entry point
+app = handler

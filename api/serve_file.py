@@ -44,3 +44,6 @@ def handler(request):
         'body': file_content,
         'isBase64Encoded': True
     }
+
+# Vercel entry point
+app = handler

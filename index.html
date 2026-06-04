@@ -41,8 +41,8 @@
         }
         
         .album-art {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.1) 100%);
-            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #12631780 0%, #12631760 50%, #12631740 100%);
+            box-shadow: 0 8px 32px #12631740;
             backdrop-filter: blur(10px);
         }
         
@@ -51,7 +51,7 @@
         }
         
         .progress-fill {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.8));
+            background: linear-gradient(90deg, #12631790, #126317b0);
         }
         
         .volume-slider {
@@ -253,12 +253,12 @@
                     
                     <!-- Controls -->
                     <div class="flex items-center justify-center gap-6 md:gap-8 mb-4 md:mb-6">
-                        <button id="prevBtn" class="control-btn text-white">
+                        <button id="prevBtn" class="control-btn" style="color: #166534">
                             <svg class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
                             </svg>
                         </button>
-                        <button id="playPauseBtn" class="play-btn w-14 h-14 sm:w-16 sm:h-16 rounded-full text-white flex items-center justify-center">
+                        <button id="playPauseBtn" class="play-btn w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center" style="color: #126317">
                             <svg id="playIcon" class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                             </svg>
@@ -266,7 +266,7 @@
                                 <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
                             </svg>
                         </button>
-                        <button id="nextBtn" class="control-btn text-white">
+                        <button id="nextBtn" class="control-btn" style="color: #166534">
                             <svg class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
                             </svg>
@@ -275,11 +275,11 @@
                     
                     <!-- Volume Control -->
                     <div class="flex items-center justify-center gap-3 md:gap-4">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: #126317" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                         </svg>
                         <input type="range" id="volumeSlider" class="volume-slider w-32 sm:w-40" min="0" max="100" value="80">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" style="color: #126317" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                         </svg>
                     </div>
@@ -289,7 +289,7 @@
         
         
         <!-- Effects Toggle Button -->
-        <button id="effectsToggle" class="toggle-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 text-white flex items-center justify-center backdrop-blur-md">
+        <button id="effectsToggle" class="toggle-btn fixed bottom-4 right-4 md:bottom-6 md:right-6 w-12 h-12 md:w-14 md:h-14 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md" style="color: #126317">
             <svg class="w-6 h-6 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z"/>
             </svg>
