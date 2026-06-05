@@ -47,7 +47,11 @@ def index():
 
 @app.route('/playlist/<filename>', methods=['GET'])
 def serve_file(filename):
-    """Serve audio files from playlist directory"""
+    """Serve audio files from playlist directory with range request support"""
+    # Remove query parameters if present
+    if '?' in filename:
+        filename = filename.split('?')[0]
+    
     playlist_dir = Path(__file__).parent / 'playlist'
     file_path = playlist_dir / filename
     
@@ -65,7 +69,42 @@ def serve_file(filename):
     elif filename.endswith('.m4a'):
         content_type = 'audio/mp4'
     
-    return send_file(file_path, mimetype=content_type)
+    file_size = file_path.stat().st_size
+    range_header = request.headers.get('Range')
+    
+    if range_header:
+        try:
+            # Parse range header (e.g., "bytes=0-1023")
+            range_match = range_header.replace('bytes=', '').split('-')
+            start = int(range_match[0]) if range_match[0] else 0
+            end = int(range_match[1]) if range_match[1] else file_size - 1
+            
+            # Validate range
+            if start >= file_size or end >= file_size or start > end:
+                response = Response()
+                response.headers['Content-Range'] = f'bytes */{file_size}'
+                return response, 416
+            
+            # Read the requested range
+            with open(file_path, 'rb') as f:
+                f.seek(start)
+                file_content = f.read(end - start + 1)
+            
+            response = Response(file_content, 206, mimetype=content_type)
+            response.headers['Content-Range'] = f'bytes {start}-{end}/{file_size}'
+            response.headers['Accept-Ranges'] = 'bytes'
+            response.headers['Content-Length'] = str(len(file_content))
+            response.headers['Cache-Control'] = 'no-cache'
+            return response
+        except Exception as e:
+            print(f"Error processing range request: {e}")
+            # Fall back to full file serve
+    
+    # Serve full file
+    response = send_file(file_path, mimetype=content_type)
+    response.headers['Accept-Ranges'] = 'bytes'
+    response.headers['Cache-Control'] = 'no-cache'
+    return response
 
 @app.route('/<path:filename>', methods=['GET'])
 def serve_static(filename):

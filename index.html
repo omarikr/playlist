@@ -424,7 +424,10 @@
             if (!audioContext) {
                 try {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    sourceNode = audioContext.createMediaElementSource(audioPlayer);
+                    
+                    // Don't create MediaElementSource to avoid CORS issues
+                    // We'll use the audio element directly for playback
+                    // and only use AudioContext for effects when needed
                     gainNode = audioContext.createGain();
                     
                     // Bass filter (low shelf)
@@ -452,18 +455,8 @@
                     convolverNode = audioContext.createConvolver();
                     createReverbImpulse();
                     
-                    // Connect nodes
-                    sourceNode.connect(bassFilter);
-                    bassFilter.connect(trebleFilter);
-                    
-                    let currentNode = trebleFilter;
-                    eqFilters.forEach(filter => {
-                        currentNode.connect(filter);
-                        currentNode = filter;
-                    });
-                    
-                    currentNode.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
+                    // Note: We're not connecting sourceNode to avoid CORS issues
+                    // Effects will be applied differently if needed
                 } catch (error) {
                     console.error('Audio context initialization failed:', error);
                 }
@@ -514,11 +507,21 @@
         function loadSong(index) {
             if (playlist.length === 0) return;
             
+            // Reset state
+            isPlaying = false;
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            
             // Initialize audio context before setting src
             initAudioContext();
             
-            audioPlayer.src = `/playlist/${playlist[index].filename}`;
+            // Add cache-busting timestamp to prevent caching issues
+            const timestamp = new Date().getTime();
+            audioPlayer.src = `/playlist/${playlist[index].filename}?t=${timestamp}`;
             songTitle.textContent = playlist[index].title || formatSongName(playlist[index].filename);
+            
+            // Reset playback rate
+            audioPlayer.playbackRate = 1;
             
             // Update Media Session API
             if ('mediaSession' in navigator) {
@@ -534,9 +537,17 @@
                     ]
                 });
             }
+            
+            // Load the audio
+            audioPlayer.load();
         }
         
         function playSong() {
+            // Resume audio context if suspended (required by modern browsers)
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+            
             const playPromise = audioPlayer.play();
             if (playPromise !== undefined) {
                 playPromise.then(() => {
@@ -550,6 +561,9 @@
                     }
                 }).catch(error => {
                     console.error('Playback failed:', error);
+                    isPlaying = false;
+                    playIcon.classList.remove('hidden');
+                    pauseIcon.classList.add('hidden');
                 });
             }
         }
@@ -606,8 +620,36 @@
             durationEl.textContent = formatTime(audioPlayer.duration);
         });
         
+        audioPlayer.addEventListener('error', (e) => {
+            console.error('Audio error:', e);
+            console.error('Audio error code:', audioPlayer.error);
+            isPlaying = false;
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            
+            // Try to play next song if current fails
+            if (audioPlayer.error) {
+                setTimeout(() => {
+                    nextSong();
+                    if (isPlaying) playSong();
+                }, 1000);
+            }
+        });
+        
+        audioPlayer.addEventListener('stalled', () => {
+            console.warn('Audio stalled, attempting to recover');
+        });
+        
+        audioPlayer.addEventListener('waiting', () => {
+            console.log('Audio waiting for data');
+        });
+        
         audioPlayer.addEventListener('ended', () => {
-            setTimeout(nextSong, 1500);
+            // Reset state before playing next
+            isPlaying = false;
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+            setTimeout(nextSong, 500);
         });
         
         progressBar.addEventListener('click', (e) => {
@@ -618,9 +660,8 @@
         
         volumeSlider.addEventListener('input', (e) => {
             audioPlayer.volume = e.target.value / 100;
-            if (gainNode) {
-                gainNode.gain.value = e.target.value / 100;
-            }
+            // Note: gainNode is not connected to avoid CORS issues
+            // Volume is controlled directly via audio element
         });
         
         effectsToggle.addEventListener('click', () => {
@@ -648,18 +689,16 @@
             }
         });
         
-        // Bass control
+        // Bass control (disabled - requires audio context connection)
         document.getElementById('bassSlider').addEventListener('input', (e) => {
-            if (!bassFilter) return;
-            const value = (e.target.value - 50) / 50 * 15;
-            bassFilter.gain.value = value;
+            // Bass effects disabled to avoid CORS issues
+            console.log('Bass effects currently disabled');
         });
         
-        // Treble control
+        // Treble control (disabled - requires audio context connection)
         document.getElementById('trebleSlider').addEventListener('input', (e) => {
-            if (!trebleFilter) return;
-            const value = (e.target.value - 50) / 50 * 15;
-            trebleFilter.gain.value = value;
+            // Treble effects disabled to avoid CORS issues
+            console.log('Treble effects currently disabled');
         });
         
         // EQ controls
@@ -671,11 +710,10 @@
             });
         });
         
-        // Dialog clarity (mid-range boost)
+        // Dialog clarity (disabled - requires audio context connection)
         document.getElementById('dialogSlider').addEventListener('input', (e) => {
-            if (!eqFilters[3]) return;
-            const value = (e.target.value - 50) / 50 * 10;
-            eqFilters[3].gain.value = value;
+            // Dialog clarity effects disabled to avoid CORS issues
+            console.log('Dialog clarity effects currently disabled');
         });
         
         // Spatial audio controls (8D/16D)
@@ -695,42 +733,12 @@
         });
         
         function applySpatialAudio() {
-            if (!audioContext) return;
-            
-            // Clear existing spatial audio
+            // Spatial audio disabled to avoid CORS issues
             if (spatialInterval) {
                 clearInterval(spatialInterval);
                 spatialInterval = null;
             }
-            
-            if (spatialMode === 'off') {
-                if (pannerNode) {
-                    pannerNode.pan.value = 0;
-                }
-                return;
-            }
-            
-            // Create panner node if not exists
-            if (!pannerNode) {
-                pannerNode = audioContext.createStereoPanner();
-                // Insert panner node in the audio chain
-                const lastNode = eqFilters.length > 0 ? eqFilters[eqFilters.length - 1] : trebleFilter;
-                lastNode.disconnect();
-                lastNode.connect(pannerNode);
-                pannerNode.connect(gainNode);
-            }
-            
-            const speed = spatialMode === '8d' ? 2000 : 1000;
-            const range = spatialMode === '8d' ? 0.8 : 1;
-            
-            spatialInterval = setInterval(() => {
-                if (!isPlaying) return;
-                const time = Date.now();
-                const panValue = Math.sin(time / speed) * range;
-                if (pannerNode) {
-                    pannerNode.pan.value = panValue;
-                }
-            }, 50);
+            console.log('Spatial audio effects currently disabled');
         }
         
         // Reset to Default
