@@ -47,18 +47,25 @@ def index():
 
 @app.route('/playlist/<filename>', methods=['GET'])
 def serve_file(filename):
-    vercel_request = VercelRequest('GET', f'/playlist/{filename}')
-    response = serve_file_handler(vercel_request)
+    """Serve audio files from playlist directory"""
+    playlist_dir = Path(__file__).parent / 'playlist'
+    file_path = playlist_dir / filename
     
-    if response['statusCode'] == 200:
-        if response.get('isBase64Encoded'):
-            import base64
-            content = base64.b64decode(response['body'])
-            return Response(content, status=response['statusCode'], headers=response['headers'])
-        else:
-            return Response(response['body'], status=response['statusCode'], headers=response['headers'])
-    else:
-        return Response(response['body'], status=response['statusCode'], headers=response['headers'])
+    if not file_path.exists() or not file_path.is_file():
+        return 'File not found', 404
+    
+    # Determine content type
+    content_type = 'application/octet-stream'
+    if filename.endswith('.mp3'):
+        content_type = 'audio/mpeg'
+    elif filename.endswith('.mp4'):
+        content_type = 'audio/mp4'
+    elif filename.endswith('.wav'):
+        content_type = 'audio/wav'
+    elif filename.endswith('.m4a'):
+        content_type = 'audio/mp4'
+    
+    return send_file(file_path, mimetype=content_type)
 
 @app.route('/<path:filename>', methods=['GET'])
 def serve_static(filename):

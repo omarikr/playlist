@@ -58,6 +58,17 @@ def extract_metadata(filepath):
 
 def handler(request):
     """Handle playlist requests"""
+    # Handle both Vercel request object and custom request object
+    if hasattr(request, 'method'):
+        method = request.method
+        path = request.path
+        body = request.body
+    else:
+        # Vercel passes a different structure
+        method = request.get('method', 'GET')
+        path = request.get('path', '/playlist')
+        body = request.get('body')
+    
     # Get the playlist directory path
     playlist_dir = Path(__file__).parent.parent / 'playlist'
     files = []
@@ -99,6 +110,3 @@ def handler(request):
         'body': json.dumps(files)
     }
 
-# Vercel entry point - compatible with Vercel Python runtime
-def app(request):
-    return handler(request)

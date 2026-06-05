@@ -4,7 +4,16 @@ from pathlib import Path
 
 def handler(request):
     """Handle playlist reorder requests"""
-    if request.method == 'OPTIONS':
+    # Handle both Vercel request object and custom request object
+    if hasattr(request, 'method'):
+        method = request.method
+        body = request.body
+    else:
+        # Vercel passes a different structure
+        method = request.get('method', 'POST')
+        body = request.get('body')
+    
+    if method == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': {
@@ -14,7 +23,7 @@ def handler(request):
             }
         }
     
-    if request.method != 'POST':
+    if method != 'POST':
         return {
             'statusCode': 405,
             'headers': {
@@ -26,7 +35,7 @@ def handler(request):
         }
     
     try:
-        data = json.loads(request.body)
+        data = json.loads(body)
         files = data.get('files', [])
         
         if not files:
@@ -98,6 +107,3 @@ def handler(request):
             'body': json.dumps({'error': str(e)})
         }
 
-# Vercel entry point - compatible with Vercel Python runtime
-def app(request):
-    return handler(request)
