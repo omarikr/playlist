@@ -236,8 +236,7 @@
                 <div class="flex-1 flex flex-col justify-center w-full">
                     <!-- Song Info -->
                     <div class="mb-4 md:mb-6 text-center">
-                        <h2 id="songTitle" class="text-xl sm:text-2xl md:text-3xl font-semibold text-white mb-2">No song selected</h2>
-                        <p id="songArtist" class="text-white text-sm sm:text-base md:text-lg hidden">Add songs to playlist folder</p>
+                        <h2 id="songTitle" class="text-xl sm:text-2xl md:text-3xl font-semibold text-white">No song selected</h2>
                     </div>
                     
                     <!-- Progress Bar -->
@@ -390,7 +389,7 @@
         </div>
     </div>
     
-    <audio id="audioPlayer"></audio>
+    <audio id="audioPlayer" crossorigin="anonymous"></audio>
     
     <script>
         const audioPlayer = document.getElementById('audioPlayer');
@@ -405,7 +404,6 @@
         const durationEl = document.getElementById('duration');
         const volumeSlider = document.getElementById('volumeSlider');
         const songTitle = document.getElementById('songTitle');
-        const songArtist = document.getElementById('songArtist');
         const effectsToggle = document.getElementById('effectsToggle');
         const effectsPanel = document.getElementById('effectsPanel');
         
@@ -424,50 +422,51 @@
         
         function initAudioContext() {
             if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                sourceNode = audioContext.createMediaElementSource(audioPlayer);
-                gainNode = audioContext.createGain();
-                
-                // Bass filter (low shelf)
-                bassFilter = audioContext.createBiquadFilter();
-                bassFilter.type = 'lowshelf';
-                bassFilter.frequency.value = 200;
-                
-                // Treble filter (high shelf)
-                trebleFilter = audioContext.createBiquadFilter();
-                trebleFilter.type = 'highshelf';
-                trebleFilter.frequency.value = 3000;
-                
-                // Create EQ filters
-                const eqFreqs = [60, 170, 310, 600, 1000, 3000, 6000, 12000];
-                eqFreqs.forEach(freq => {
-                    const filter = audioContext.createBiquadFilter();
-                    filter.type = 'peaking';
-                    filter.frequency.value = freq;
-                    filter.Q.value = 1;
-                    filter.gain.value = 0;
-                    eqFilters.push(filter);
-                });
-                
-                // Convolver for reverb
-                convolverNode = audioContext.createConvolver();
-                createReverbImpulse();
-                
-                // Connect nodes
-                sourceNode.connect(bassFilter);
-                bassFilter.connect(trebleFilter);
-                
-                let currentNode = trebleFilter;
-                eqFilters.forEach(filter => {
-                    currentNode.connect(filter);
-                    currentNode = filter;
-                });
-                
-                currentNode.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Bypass convolver by default
-                gainNode.connect(audioContext.destination);
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    sourceNode = audioContext.createMediaElementSource(audioPlayer);
+                    gainNode = audioContext.createGain();
+                    
+                    // Bass filter (low shelf)
+                    bassFilter = audioContext.createBiquadFilter();
+                    bassFilter.type = 'lowshelf';
+                    bassFilter.frequency.value = 200;
+                    
+                    // Treble filter (high shelf)
+                    trebleFilter = audioContext.createBiquadFilter();
+                    trebleFilter.type = 'highshelf';
+                    trebleFilter.frequency.value = 3000;
+                    
+                    // Create EQ filters
+                    const eqFreqs = [60, 170, 310, 600, 1000, 3000, 6000, 12000];
+                    eqFreqs.forEach(freq => {
+                        const filter = audioContext.createBiquadFilter();
+                        filter.type = 'peaking';
+                        filter.frequency.value = freq;
+                        filter.Q.value = 1;
+                        filter.gain.value = 0;
+                        eqFilters.push(filter);
+                    });
+                    
+                    // Convolver for reverb
+                    convolverNode = audioContext.createConvolver();
+                    createReverbImpulse();
+                    
+                    // Connect nodes
+                    sourceNode.connect(bassFilter);
+                    bassFilter.connect(trebleFilter);
+                    
+                    let currentNode = trebleFilter;
+                    eqFilters.forEach(filter => {
+                        currentNode.connect(filter);
+                        currentNode = filter;
+                    });
+                    
+                    currentNode.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                } catch (error) {
+                    console.error('Audio context initialization failed:', error);
+                }
             }
         }
         
@@ -515,23 +514,16 @@
         function loadSong(index) {
             if (playlist.length === 0) return;
             
+            // Initialize audio context before setting src
+            initAudioContext();
+            
             audioPlayer.src = `/playlist/${playlist[index].filename}`;
             songTitle.textContent = playlist[index].title || formatSongName(playlist[index].filename);
-            
-            // Hide artist if unknown
-            const artist = playlist[index].artist || 'Unknown Artist';
-            if (artist === 'Unknown Artist' || !artist) {
-                songArtist.classList.add('hidden');
-            } else {
-                songArtist.textContent = artist;
-                songArtist.classList.remove('hidden');
-            }
             
             // Update Media Session API
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: songTitle.textContent,
-                    artist: artist === 'Unknown Artist' ? '' : artist,
                     artwork: [
                         { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '96x96', type: 'image/jpeg' },
                         { src: 'https://img.magnific.com/premium-photo/vast-calm-ocean-horizon-clear-light-blue-sky-water-blank-page-background_1277546-20317.jpg', sizes: '128x128', type: 'image/jpeg' },
@@ -545,15 +537,20 @@
         }
         
         function playSong() {
-            initAudioContext();
-            audioPlayer.play();
-            isPlaying = true;
-            playIcon.classList.add('hidden');
-            pauseIcon.classList.remove('hidden');
-            
-            // Update Media Session API
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.playbackState = 'playing';
+            const playPromise = audioPlayer.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    isPlaying = true;
+                    playIcon.classList.add('hidden');
+                    pauseIcon.classList.remove('hidden');
+                    
+                    // Update Media Session API
+                    if ('mediaSession' in navigator) {
+                        navigator.mediaSession.playbackState = 'playing';
+                    }
+                }).catch(error => {
+                    console.error('Playback failed:', error);
+                });
             }
         }
         
