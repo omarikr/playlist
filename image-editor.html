@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+
+        .editor-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        input, select, textarea {
+            padding: 0.625rem 0.875rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0.375rem;
+            color: #fafafa;
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            font-size: 0.875rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        button {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #050505;
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fafafa;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        .canvas-container {
+            position: relative;
+        }
+
+        #imageCanvas {
+            background: #4a1a6b;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .text-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .text-item span {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .text-item button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 40px;
+            padding: 0.25rem;
+            cursor: pointer;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Editor</h1>
+    
+    <div class="editor-container">
+        <div class="controls">
+            <div class="control-group">
+                <label>Text Type</label>
+                <select id="textType">
+                    <option value="heading">Heading</option>
+                    <option value="text">Regular Text</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Text Content</label>
+                <textarea id="textContent" rows="3" placeholder="Enter your text here..."></textarea>
+            </div>
+            
+            <div class="control-group">
+                <label>Font Size</label>
+                <input type="number" id="fontSize" value="32" min="12" max="120">
+            </div>
+            
+            <div class="control-group">
+                <label>Text Color</label>
+                <input type="color" id="textColor" value="#ffffff" class="color-picker">
+            </div>
+            
+            <div class="control-group">
+                <label>X Position</label>
+                <input type="number" id="posX" value="50" min="0">
+            </div>
+            
+            <div class="control-group">
+                <label>Y Position</label>
+                <input type="number" id="posY" value="50" min="0">
+            </div>
+            
+            <button class="btn-primary" onclick="addText()">Add Text</button>
+            <button class="btn-secondary" onclick="downloadImage()">Download Image</button>
+            <button class="btn-danger" onclick="clearCanvas()">Clear All</button>
+            
+            <div class="control-group">
+                <label>Text Elements</label>
+                <div class="text-list" id="textList"></div>
+            </div>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="imageCanvas" width="800" height="600"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        let textElements = [];
+        let selectedElement = null;
+
+        // Initialize canvas with dark purple background
+        function initCanvas() {
+            ctx.fillStyle = '#4a1a6b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            redrawCanvas();
+        }
+
+        function redrawCanvas() {
+            // Clear and set background
+            ctx.fillStyle = '#4a1a6b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw all text elements
+            textElements.forEach((element, index) => {
+                ctx.font = `${element.type === 'heading' ? 'bold' : 'normal'} ${element.fontSize}px 'Outfit', system-ui, -apple-system, sans-serif`;
+                ctx.fillStyle = element.color;
+                ctx.fillText(element.content, element.x, element.y);
+            });
+        }
+
+        function addText() {
+            const textType = document.getElementById('textType').value;
+            const content = document.getElementById('textContent').value;
+            const fontSize = parseInt(document.getElementById('fontSize').value);
+            const color = document.getElementById('textColor').value;
+            const x = parseInt(document.getElementById('posX').value);
+            const y = parseInt(document.getElementById('posY').value);
+
+            if (!content.trim()) {
+                alert('Please enter some text');
+                return;
+            }
+
+            const textElement = {
+                id: Date.now(),
+                type: textType,
+                content: content,
+                fontSize: fontSize,
+                color: color,
+                x: x,
+                y: y
+            };
+
+            textElements.push(textElement);
+            updateTextList();
+            redrawCanvas();
+            
+            // Clear input
+            document.getElementById('textContent').value = '';
+        }
+
+        function deleteText(id) {
+            textElements = textElements.filter(el => el.id !== id);
+            updateTextList();
+            redrawCanvas();
+        }
+
+        function editText(id) {
+            const element = textElements.find(el => el.id === id);
+            if (element) {
+                document.getElementById('textType').value = element.type;
+                document.getElementById('textContent').value = element.content;
+                document.getElementById('fontSize').value = element.fontSize;
+                document.getElementById('textColor').value = element.color;
+                document.getElementById('posX').value = element.x;
+                document.getElementById('posY').value = element.y;
+                
+                // Remove the old element
+                textElements = textElements.filter(el => el.id !== id);
+                updateTextList();
+                redrawCanvas();
+            }
+        }
+
+        function updateTextList() {
+            const textList = document.getElementById('textList');
+            textList.innerHTML = '';
+            
+            textElements.forEach(element => {
+                const item = document.createElement('div');
+                item.className = 'text-item';
+                item.innerHTML = `
+                    <span>${element.type === 'heading' ? '📌' : '📝'} ${element.content.substring(0, 20)}${element.content.length > 20 ? '...' : ''}</span>
+                    <button class="btn-secondary" onclick="editText(${element.id})">Edit</button>
+                    <button class="btn-danger" onclick="deleteText(${element.id})">Delete</button>
+                `;
+                textList.appendChild(item);
+            });
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'edited-image.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function clearCanvas() {
+            if (confirm('Are you sure you want to clear all text?')) {
+                textElements = [];
+                updateTextList();
+                redrawCanvas();
+            }
+        }
+
+        // Make canvas interactive for positioning
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            document.getElementById('posX').value = Math.round(x);
+            document.getElementById('posY').value = Math.round(y);
+        });
+
+        // Initialize
+        initCanvas();
+    </script>
+</body>
+</html>

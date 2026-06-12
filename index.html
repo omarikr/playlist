@@ -507,11 +507,6 @@
         function loadSong(index) {
             if (playlist.length === 0) return;
             
-            // Reset state
-            isPlaying = false;
-            playIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
-            
             // Initialize audio context before setting src
             initAudioContext();
             
@@ -561,9 +556,8 @@
                     }
                 }).catch(error => {
                     console.error('Playback failed:', error);
-                    isPlaying = false;
-                    playIcon.classList.remove('hidden');
-                    pauseIcon.classList.add('hidden');
+                    // Don't reset isPlaying on error - might be a temporary loading issue
+                    // The audio might still play once it's ready
                 });
             }
         }
@@ -583,13 +577,13 @@
         function prevSong() {
             currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
             loadSong(currentIndex);
-            if (isPlaying) playSong();
+            playSong();
         }
         
         function nextSong() {
             currentIndex = (currentIndex + 1) % playlist.length;
             loadSong(currentIndex);
-            if (isPlaying) playSong();
+            playSong();
         }
         
         function formatTime(seconds) {
@@ -631,7 +625,6 @@
             if (audioPlayer.error) {
                 setTimeout(() => {
                     nextSong();
-                    if (isPlaying) playSong();
                 }, 1000);
             }
         });
@@ -645,10 +638,7 @@
         });
         
         audioPlayer.addEventListener('ended', () => {
-            // Reset state before playing next
-            isPlaying = false;
-            playIcon.classList.remove('hidden');
-            pauseIcon.classList.add('hidden');
+            // Continue to next song without pausing
             setTimeout(nextSong, 500);
         });
         
@@ -790,6 +780,8 @@
         audioPlayer.volume = 0.8;
         
         // Setup Media Session API for background playback
+        // Temporarily disabled to test if it's causing auto-pause issues
+        /*
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('play', () => {
                 playSong();
@@ -813,6 +805,7 @@
                 }
             });
         }
+        */
     </script>
 </body>
 </html>
